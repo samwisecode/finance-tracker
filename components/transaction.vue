@@ -1,5 +1,28 @@
 <script lang="ts" setup>
-const { currency } = useUseCurrency(3000);
+interface Transaction {
+  id: number;
+  amount: number;
+  date: string;
+  description?: string;
+  type?: string;
+  category?: string;
+}
+
+const props = defineProps<{
+  transaction: Transaction;
+}>();
+
+const { currency } = useUseCurrency(props.transaction.amount);
+
+const isIncome = computed(() => props.transaction.type === 'Income');
+
+const arrowIcon = computed(() =>
+  isIncome.value ? 'i-heroicons-arrow-right' : 'i-heroicons-arrow-left'
+);
+
+const arrowIconColor = computed(() =>
+  isIncome.value ? 'text-green-600' : 'text-red-600'
+);
 
 const items = [
   [
@@ -23,11 +46,17 @@ const items = [
   >
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <UIcon name="i-heroicons-arrow-up-right" class="text-green-600" />
-        <div>Salary</div>
+        <UIcon :name="arrowIcon" :class="arrowIconColor" />
+        <div>{{ props.transaction.description }}</div>
       </div>
       <div>
-        <UBadge color="gray" variant="outline" size="sm">Entertainment</UBadge>
+        <UBadge
+          color="gray"
+          variant="outline"
+          size="sm"
+          v-if="props.transaction.category"
+          >{{ props.transaction.category }}</UBadge
+        >
       </div>
     </div>
     <div class="flex items-center justify-end space-x-2">
@@ -39,7 +68,7 @@ const items = [
             variant="ghost"
             trailing-icon="i-heroicons-ellipsis-horizontal"
           >
-            <UIcon name="i-heroicons-dots-vertical" />
+            <UIcon name="i-heroicons-dots-horizontal" />
           </UButton>
         </UDropdown>
       </div>

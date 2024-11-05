@@ -1,7 +1,32 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { transactionViewOptions } from '~/constants';
 const selectedView = ref(transactionViewOptions[0]);
+
+const supabase = useSupabaseClient();
+
+const transactions = ref([]);
+
+const { data } = await useAsyncData('transactions', async () => {
+  const { data, error } = await supabase.from('transactions').select();
+  if (error) return [];
+  return data;
+});
+
+transactions.value = data.value || [];
+
+const transactionsGroupedByDate = computed(() => {
+  let groupedTransactions: Record<string, any[]> = {};
+  for (const transaction of transactions.value) {
+    const date = new Date(transaction.date_created).toISOString().split('T')[0];
+    if (!groupedTransactions[date]) {
+      groupedTransactions[date] = [];
+    }
+    groupedTransactions[date].push(transaction);
+  }
+  return groupedTransactions;
+});
+console.log(transactionsGroupedByDate.value);
 </script>
 
 <template>
@@ -40,13 +65,11 @@ const selectedView = ref(transactionViewOptions[0]);
 
   <section>
     <h1 class="text-xl font-bold">Transactions</h1>
-    <Transaction />
-    <Transaction />
-    <Transaction />
-    <Transaction />
-    <Transaction />
-    <Transaction />
-    <Transaction />
+    <Transaction
+      v-for="(transaction, index) in transactions"
+      :key="index"
+      :transaction="transaction"
+    />
   </section>
 </template>
 
