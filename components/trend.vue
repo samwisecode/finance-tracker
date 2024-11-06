@@ -24,7 +24,7 @@ const percentageTrend = computed(() => {
   return Math.ceil(ratio);
 });
 
-const { currency } = useUseCurrency(props.amount);
+const { currency } = useCurrency(props.amount);
 </script>
 
 <template>

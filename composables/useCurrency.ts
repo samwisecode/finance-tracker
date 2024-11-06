@@ -1,4 +1,4 @@
-export const useUseCurrency = (amount: number | Ref<number>) => {
+export const useCurrency = (amount: number | Ref<number>) => {
   const currency = computed(() => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',

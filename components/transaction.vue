@@ -2,7 +2,7 @@
 interface Transaction {
   id: number;
   amount: number;
-  date: string;
+  date_created: string;
   description?: string;
   type?: string;
   category?: string;
@@ -12,7 +12,7 @@ const props = defineProps<{
   transaction: Transaction;
 }>();
 
-const { currency } = useUseCurrency(props.transaction.amount);
+const { currency } = useCurrency(props.transaction.amount);
 
 const isIncome = computed(() => props.transaction.type === 'Income');
 

@@ -5,7 +5,7 @@ const selectedView = ref(transactionViewOptions[0]);
 
 const supabase = useSupabaseClient();
 
-const transactions = ref([]);
+const transactions = ref<any[]>([]);
 
 const { data } = await useAsyncData('transactions', async () => {
   const { data, error } = await supabase.from('transactions').select();
@@ -26,7 +26,8 @@ const transactionsGroupedByDate = computed(() => {
   }
   return groupedTransactions;
 });
-console.log(transactionsGroupedByDate.value);
+
+const { currency } = useCurrency(transactions.value[0].amount);
 </script>
 
 <template>
